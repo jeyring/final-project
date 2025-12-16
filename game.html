@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Snake Game</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 { margin-bottom: 10px; text-shadow: 0 0 10px #0f0; }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(20, 20px);
+            grid-template-rows: repeat(20, 20px);
+            background-color: #000;
+            border: 4px solid #333;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+        .snake { background-color: #0f0; box-shadow: 0 0 5px #0f0; }
+        .food { background-color: #f0f; box-shadow: 0 0 5px #f0f; border-radius: 50%; }
+        #score-board { margin-top: 20px; font-size: 1.2rem; }
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            border: 1px solid #0f0;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        button:hover { background: #444; }
+    </style>
+</head>
+<body>
+    <h1>NEON SNAKE</h1>
+    <div id="game-board"></div>
+    <div id="score-board">Score: <span id="score">0</span></div>
+    <button onclick="resetGame()">Restart Game</button>
+    <br>
+    <a href="scratch.html" style="color: #888; text-decoration: none;">&larr; Back to Scratch Page</a>
+
+    <script>
+        const board = document.getElementById('game-board');
+        const scoreElement = document.getElementById('score');
+        let snake = [{x: 10, y: 10}];
+        let food = {x: 15, y: 15};
+        let direction = {x: 0, y: 0};
+        let score = 0;
+        let gameInterval;
+        let gameSpeed = 200;
+
+        function draw() {
+            board.innerHTML = '';
+            snake.forEach(segment => {
+                const snakeElement = document.createElement('div');
+                snakeElement.style.gridRowStart = segment.y;
+                snakeElement.style.gridColumnStart = segment.x;
+                snakeElement.classList.add('snake');
+                board.appendChild(snakeElement);
+            });
+            const foodElement = document.createElement('div');
+            foodElement.style.gridRowStart = food.y;
+            foodElement.style.gridColumnStart = food.x;
+            foodElement.classList.add('food');
+            board.appendChild(foodElement);
+        }
+
+        function update() {
+            const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
+
+            // Wall Collision Check
+            if (head.x < 1 || head.x > 20 || head.y < 1 || head.y > 20) {
+                return resetGame();
+            }
+
+            // Self Collision Check
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) return resetGame();
+            }
+
+            snake.unshift(head);
+
+            // Food Check
+            if (head.x === food.x && head.y === food.y) {
+                score++;
+                scoreElement.innerText = score;
+                placeFood();
+                // Increase speed slightly every 2 points
+                if (score % 2 === 0 && gameSpeed > 50) {
+                    clearInterval(gameInterval);
+                    gameSpeed -= 10;
+                    gameInterval = setInterval(update, gameSpeed);
+                }
+            } else {
+                snake.pop();
+            }
+            draw();
+        }
+
+        function placeFood() {
+            food = {
+                x: Math.floor(Math.random() * 20) + 1,
+                y: Math.floor(Math.random() * 20) + 1
+            };
+            // Prevent food spawning on snake
+            snake.forEach(segment => {
+                if (segment.x === food.x && segment.y === food.y) placeFood();
+            });
+        }
+
+        function resetGame() {
+            snake = [{x: 10, y: 10}];
+            direction = {x: 0, y: 0};
+            score = 0;
+            scoreElement.innerText = 0;
+            gameSpeed = 200;
+            clearInterval(gameInterval);
+            gameInterval = setInterval(update, gameSpeed);
+            draw();
+        }
+
+        window.addEventListener('keydown', e => {
+            switch (e.key) {
+                case 'ArrowUp': if (direction.y === 0) direction = {x: 0, y: -1}; break;
+                case 'ArrowDown': if (direction.y === 0) direction = {x: 0, y: 1}; break;
+                case 'ArrowLeft': if (direction.x === 0) direction = {x: -1, y: 0}; break;
+                case 'ArrowRight': if (direction.x === 0) direction = {x: 1, y: 0}; break;
+            }
+        });
+
+        draw();
+    </script>
+</body>
+</html>

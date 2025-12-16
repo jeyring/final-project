@@ -1,0 +1,47 @@
+/* Requirement: Styles specifying font family and color */
+body {
+    font-family: 'Verdana', sans-serif;
+    color: #ffffff;
+    /* Requirement: Custom background color/image */
+    background-color: #0d1b2a; 
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Requirement: 3 Divs for positioning and styling */
+.header-box {
+    background-color: #1b263b;
+    border: 3px solid #415a77;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.content-box {
+    background-color: #415a77;
+    color: #e0e1dd;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.media-box {
+    background-color: #778da9;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    border: 2px dashed #ffffff;
+}
+
+h1, h2 {
+    color: #e0e1dd;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+li {
+    margin-bottom: 5px;
+}
